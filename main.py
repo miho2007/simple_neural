@@ -31,8 +31,8 @@ def sigmoid(z):
     return 1 / (1 + math.exp(-z))
 
 
-# 10 rounds
-for i in range (10):
+# 2 rounds
+for i in range (2):
 
 
     #get new number for evry round
