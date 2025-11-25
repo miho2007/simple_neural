@@ -2,12 +2,14 @@
 #-----------------------------------------------------------------------------------
 
 
+import random
+
 
 
 
 # simplest neural network: 1 neuron
-secret = 1.0
-y = 0
+secret = random.randint(0,1)
+y1 = 0
 y2 = 0
 
 
@@ -17,8 +19,8 @@ learning_rate = 0.1
 x = 0.7
 
 # weight and bias
-w = 1.2
-b = -0.4
+w1 = 1.2
+b1 = -0.4
 
 # second neuron weight and bias
 w2 = 0.5
@@ -28,43 +30,29 @@ import math
 def sigmoid(z):
     return 1 / (1 + math.exp(-z))
 
-while abs(y - secret) > 0.0000000000000001:  # you can try more iterations
-    # 1. compute neuron output
-    z = w * x + b
-    y = sigmoid(z)
+while abs(y2 - secret) > 0.0001:  # realistic tolerance
+    # neuron 1
+    y1 = sigmoid(w1 * x + b1)
 
-    # 2. print current guess
+    # neuron 2
+    y2 = sigmoid(w2 * y1 + b2)
 
+    # adjust neuron 1
+    if y1 > secret:
+        w1 -= learning_rate * x
+        b1 -= learning_rate
+    else:
+        w1 += learning_rate * x
+        b1 += learning_rate
 
-    # 3. adjust weight and bias
-    if y > secret:
-        w -= learning_rate * x
-        b -= learning_rate
-    elif y < secret:
-        w += learning_rate * x
-        b += learning_rate
-
-print(f"neural 1: {y}")
-
-
-while abs(y2 - secret) > 0.0000000000000001:  # you can try more iterations
-    # 1. compute neuron output
-    z2 = w2 * y + b2
-    y2 = sigmoid(z2)
-
-    # 2. print current guess
-
-
-    # 3. adjust weight and bias
+    # adjust neuron 2
     if y2 > secret:
-        w2 -= learning_rate * y
+        w2 -= learning_rate * y1
         b2 -= learning_rate
-    elif y2 < secret:
-        w2 += learning_rate * y
+    else:
+        w2 += learning_rate * y1
         b2 += learning_rate
 
-
-
-
-
-print(f"neural 2: {y2}")
+print(f"Secret number: {secret:.6f}")
+print(f"Neuron 1 output: {y1:.6f}")
+print(f"Neuron 2 output: {y2:.6f}")
