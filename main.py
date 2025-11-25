@@ -8,7 +8,7 @@ import random
 
 
 # simplest neural network: 1 neuron
-secret = random.randint(0,1)
+secret = random.random()
 y1 = 0
 y2 = 0
 
