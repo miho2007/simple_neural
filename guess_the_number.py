@@ -1,66 +1,82 @@
-#guess the nmber neural network with 1 neuron.
-#-----------------------------------------------------------------------------------
-
-
 import random
-
-
-
-
-# simplest neural network: 1 neuron
-
-y1 = 0
-
-
-
-i = 0
-learning_rate = 0.1
-# input
-x = 0.7
-
-# weight and bias
-w1 = 1.2
-b1 = -0.4
-
-# second neuron weight and bias
-w2 = 0.5
-b2 = 0.1
-# activation function (sigmoid)
 import math
+
+# -------------------------------------------
+# Activation + derivative
+# -------------------------------------------
 def sigmoid(z):
     return 1 / (1 + math.exp(-z))
 
+def sigmoid_derivative(z):
+    s = sigmoid(z)
+    return s * (1 - s)
 
-# 2 rounds
-for i in range (2):
+# -------------------------------------------
+# Initialize weights & biases
+# -------------------------------------------
+w1 = random.uniform(-1, 1)
+b1 = random.uniform(-1, 1)
 
+w2 = random.uniform(-1, 1)
+b2 = random.uniform(-1, 1)
 
-    #get new number for evry round
+learning_rate = 0.3
+x = 0.7   # constant input, as in your original code
+
+# -------------------------------------------
+# Train for many rounds
+# -------------------------------------------
+for round_idx in range(10):
+
+    # new target each round
     secret = random.random()
-    y2 = 0
-    #---------------
-    while abs(y2 - secret) > 0.0001:  # realistic tolerance
-        # neuron 1
-        y1 = sigmoid(w1 * x + b1)
 
-        # neuron 2
-        y2 = sigmoid(w2 * y1 + b2)
+    for step in range(5000):
 
-        # adjust neuron 1
-        if y1 > secret:
-            w1 -= learning_rate * x
-            b1 -= learning_rate
-        else:
-            w1 += learning_rate * x
-            b1 += learning_rate
+        # -----------------------------
+        # Forward pass
+        # -----------------------------
+        z1 = w1 * x + b1
+        y1 = sigmoid(z1)
 
-        # adjust neuron 2
-        if y2 > secret:
-            w2 -= learning_rate * y1
-            b2 -= learning_rate
-        else:
-            w2 += learning_rate * y1
-            b2 += learning_rate
+        z2 = w2 * y1 + b2
+        y2 = sigmoid(z2)   # prediction
 
-    print(f"Round {round}: secret={secret:.3f}, neuron2 output={y2:.3f}")
+        # -----------------------------
+        # Loss (Mean Squared Error)
+        # -----------------------------
+        loss = (y2 - secret) ** 2
 
+        # -----------------------------
+        # Backpropagation
+        # -----------------------------
+
+        # dLoss/dy2
+        dL_dy2 = 2 * (y2 - secret)
+
+        # dLoss/dz2
+        dL_dz2 = dL_dy2 * sigmoid_derivative(z2)
+
+        # Gradients for w2 and b2
+        dL_dw2 = dL_dz2 * y1
+        dL_db2 = dL_dz2
+
+        # Now backpropagate to neuron 1
+        dL_dy1 = dL_dz2 * w2
+
+        dL_dz1 = dL_dy1 * sigmoid_derivative(z1)
+
+        # Gradients for w1 and b1
+        dL_dw1 = dL_dz1 * x
+        dL_db1 = dL_dz1
+
+        # -----------------------------
+        # Update weights
+        # -----------------------------
+        w2 -= learning_rate * dL_dw2
+        b2 -= learning_rate * dL_db2
+
+        w1 -= learning_rate * dL_dw1
+        b1 -= learning_rate * dL_db1
+
+    print(f"Round {round_idx+1}: secret={secret:.3f} | guess={y2:.3f} | loss={loss:.6f}")
