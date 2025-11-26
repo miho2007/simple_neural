@@ -21,7 +21,7 @@ w2 = random.uniform(-1, 1)
 b2 = random.uniform(-1, 1)
 
 learning_rate = 0.3
-x = 0.7   # constant input, as in your original code
+x = 0.7   # constant input
 
 # -------------------------------------------
 # Train for many rounds
